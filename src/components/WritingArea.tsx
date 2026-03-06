@@ -3,6 +3,8 @@ import React, {useState, useRef, useCallback, useEffect} from 'react';
 // Japanese character detection utility
 const JAPANESE_REGEX = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/;
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
 // Sentence tracking interface for evolution paths
 interface Sentence {
   text: string;
@@ -164,7 +166,7 @@ export default function WritingArea({
 
     // --- 一時的なダミー関数---
     const getSuggestion = async (args: { target_sentence: string; context: string }) => {
-        const response = await fetch("http://localhost:8080/suggestions", {
+        const response = await fetch(`${API_BASE_URL}/suggestions`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(args),
@@ -174,7 +176,7 @@ export default function WritingArea({
     };
     const getNaturalnessSuggestion = async (args: { sentence: string; context: string; evolutions?: string[] }) => {
         try {
-            const response = await fetch("http://localhost:8080/naturalness", {
+            const response = await fetch(`${API_BASE_URL}/naturalness`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(args),
@@ -194,7 +196,7 @@ export default function WritingArea({
     };
     const generateSpeech = async (args: { text: string }) => {
         try {
-            const response = await fetch("http://localhost:8080/tts", {
+            const response = await fetch(`${API_BASE_URL}/tts`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(args),
@@ -217,7 +219,7 @@ export default function WritingArea({
     };
     const submitTask = async (args: { taskId: string; finalText: string }) => {
         try {
-            const response = await fetch(`http://localhost:8080/tasks/${args.taskId}`, {
+            const response = await fetch(`${API_BASE_URL}/tasks/${args.taskId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -239,7 +241,7 @@ export default function WritingArea({
     };
     const logSuggestionOnce = async (args: any) => {
         try {
-            await fetch("http://localhost:8080/suggestions/log", {
+            await fetch(`${API_BASE_URL}/suggestions/log`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -256,7 +258,7 @@ export default function WritingArea({
 
     const updateSuggestionAction = async (args: { trackingId: string; newAction: string }) => {
         try {
-            await fetch(`http://localhost:8080/suggestions/log/${args.trackingId}/action`, {
+            await fetch(`${API_BASE_URL}/suggestions/log/${args.trackingId}/action`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ action: args.newAction }),
@@ -268,7 +270,7 @@ export default function WritingArea({
 
     const logAudioPlay = async (args: { trackingId: string }) => {
         try {
-            await fetch(`http://localhost:8080/suggestions/log/${args.trackingId}/audio`, {
+            await fetch(`${API_BASE_URL}/suggestions/log/${args.trackingId}/audio`, {
                 method: "PUT",
             });
         } catch (error) {
