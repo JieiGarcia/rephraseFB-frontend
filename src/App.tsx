@@ -3,6 +3,7 @@ import AuthPage from './components/AuthPage';
 import TaskSelection from './components/TaskSelection';
 import { useState } from 'react';
 import './App.css'
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -10,11 +11,10 @@ function App() {
   const [taskCondition, setTaskCondition] = useState<'control' | 'experimental' | null>(null);
   const [internalUserId, setInternalUserId] = useState<string | null>(null);
   const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
-
+  
   const handleLogin = async (userUserId: string) => {
     try {
-      // Convexの代わりに、自作したGoのAPIへPOSTリクエストを送る
-      const response = await fetch("http://localhost:8080/users", {
+      const response = await fetch(`${API_BASE_URL}/users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,7 +44,7 @@ function App() {
 
     try {
       // Goのタスク作成APIへリクエストを送信
-      const response = await fetch("http://localhost:8080/tasks", {
+      const response = await fetch(`${API_BASE_URL}/tasks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
